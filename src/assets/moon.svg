@@ -6,7 +6,16 @@
             stroke-miterlimit="10" stroke-linejoin="round" stroke-linecap="round" stroke-width="3.5" stroke="#323334"
             fill="#FEE1C5" style="stroke:rgb(50, 51, 52);fill:rgb(254, 225, 197);animation-play-state:paused"></path>
         <metadata xmlns:d="https://loading.io/stock/" style="animation-play-state:paused">
+            <d:name style="animation-play-state:paused">weather</d:name>
 
+
+            <d:tags style="animation-play-state:paused">weather,nature,sky,froecast,moon,night</d:tags>
+
+
+            <d:license style="animation-play-state:paused">by</d:license>
+
+
+            <d:slug style="animation-play-state:paused">c9dwg6</d:slug>
         </metadata>
     </g>
 </svg>
