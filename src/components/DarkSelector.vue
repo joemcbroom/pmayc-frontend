@@ -9,10 +9,10 @@ defineProps<{
 	useImages?: boolean;
 }>();
 
-const main = useDarkModeStore();
+const darkModeStore = useDarkModeStore();
 
-const { darkMode } = storeToRefs(main);
-const { setDarkMode } = main;
+const { darkMode } = storeToRefs(darkModeStore);
+const { setDarkMode } = darkModeStore;
 
 let imagePath = computed(() => {
 	return darkMode ? sunUrl : moonUrl;

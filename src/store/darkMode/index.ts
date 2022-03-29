@@ -4,7 +4,7 @@ interface DarkModeStatus {
 	darkMode: boolean;
 }
 
-export const useDarkModeStore = defineStore('main', {
+export const useDarkModeStore = defineStore('darkMode', {
 	state: () => ({
 		darkMode: false,
 	}),

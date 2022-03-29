@@ -1,5 +1,17 @@
 <script setup lang="ts">
+import { useCryptoStore } from '@/store/crypto';
+import { mapActions, storeToRefs } from 'pinia';
 import NavBar from '@/components/NavBar.vue';
+import { onMounted } from 'vue';
+
+const crypto = useCryptoStore();
+
+const { contractAbi } = storeToRefs(crypto);
+const { setContractAbi } = crypto;
+
+onMounted(async () => {
+	await setContractAbi();
+});
 </script>
 
 <template>
@@ -7,7 +19,6 @@ import NavBar from '@/components/NavBar.vue';
 	<main class="container text-center">
 		<router-view />
 	</main>
-	<img class="m-auto aspect-1 w-2/12" alt="Vue logo" src="./assets/pmayc-transparent.png" />
 </template>
 
 <style lang="scss"></style>
