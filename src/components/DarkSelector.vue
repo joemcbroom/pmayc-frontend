@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, computed, ref } from 'vue';
-import { useDarkModeStore } from '@/store/darkmode';
+import { onMounted, computed } from 'vue';
+import { useDarkModeStore } from '@/store/darkMode';
 import { storeToRefs } from 'pinia';
 import sunUrl from '@/assets/sun.svg';
 import moonUrl from '@/assets/moon.svg';

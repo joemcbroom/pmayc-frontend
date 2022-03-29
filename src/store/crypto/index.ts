@@ -1,18 +1,11 @@
-import { defineStore, acceptHMRUpdate } from 'pinia';
-import Web3 from 'web3';
+import { defineStore } from 'pinia';
 
 const VITE_POLYGON_API_KEY: any = import.meta.env.VITE_POLYGON_API_KEY;
 const POLYGON_API_URL = 'https://api.polygonscan.com/api/';
 const CONTRACT_ADDRESS = '0xA847d6Ef6BebEc22751a91ba9270D23b3FA2fF8C';
-const CONTRACT_ADDRESS_ORG = '0xdFF760Ec52a498464c670B680DC81e6861f10BAd';
+// const CONTRACT_ADDRESS_ORG = '0xdFF760Ec52a498464c670B680DC81e6861f10BAd';
 
 // Pinia store for integrating with metamask, etc
-
-interface CryptoStore {
-	contractAbi: object;
-	contractAddress: string;
-	contractInstance: any;
-}
 
 export const useCryptoStore = defineStore('crypto', {
 	state: () => ({

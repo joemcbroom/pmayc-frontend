@@ -1,9 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 
-interface DarkModeStatus {
-	darkMode: boolean;
-}
-
 export const useDarkModeStore = defineStore('darkMode', {
 	state: () => ({
 		darkMode: false,
