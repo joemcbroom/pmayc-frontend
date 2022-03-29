@@ -1,4 +1,6 @@
-import { defineStore } from 'pinia';
+import { defineStore, acceptHMRUpdate } from 'pinia';
+import { useErrorStore } from '@/store/error';
+// import { ethers } from 'ethers';
 
 const VITE_POLYGON_API_KEY: any = import.meta.env.VITE_POLYGON_API_KEY;
 const POLYGON_API_URL = 'https://api.polygonscan.com/api/';
@@ -12,9 +14,11 @@ export const useCryptoStore = defineStore('crypto', {
 		contractAbi: [],
 		contractAddress: CONTRACT_ADDRESS,
 		contractInstance: [] as any,
+		account: '',
 	}),
 	actions: {
 		async setContractAbi() {
+			const errorStore = useErrorStore();
 			try {
 				const params = {
 					module: 'contract',
@@ -26,21 +30,47 @@ export const useCryptoStore = defineStore('crypto', {
 				const data = await res.json();
 				this.contractAbi = data.result;
 			} catch (e) {
-				console.log(e);
+				errorStore.setError(e);
 			}
 		},
 		// async setContractInstance() {
-		// 	const web3 = new Web3(Web3.givenProvider);
 		// 	try {
-		// 		const contract = await new web3.eth.Contract(
+		// 		const { ethereum } = window;
+		// 		if (!ethereum) {
+		// 			throw new Error('No ethereum provider (metamask)');
+		// 		}
+		// 		const provider = new ethers.providers.Web3Provider(ethereum);
+		// 		const signer = provider.getSigner();
+		// 		const contract = new ethers.Contract(
+		// 			this.contractAddress,
 		// 			this.contractAbi,
-		// 			this.contractAddress
+		// 			signer
 		// 		);
-		// 		debugger;
 		// 		this.contractInstance = contract;
 		// 	} catch (e) {
 		// 		console.log(e);
 		// 	}
 		// },
+		async connectWallet() {
+			const errorStore = useErrorStore();
+			try {
+				// @ts-expect-error
+				const { ethereum } = window;
+				if (!ethereum) {
+					throw new Error('You must have the Metamask extension installed');
+				}
+				const myAccounts = await ethereum.request({ method: 'eth_requestAccounts' });
+
+				console.log('Connected: ', myAccounts[0]);
+				this.account = myAccounts[0];
+				return this.account;
+			} catch (error) {
+				errorStore.setError(error, 'connectWallet');
+			}
+		},
 	},
 });
+
+if (import.meta.hot) {
+	import.meta.hot.accept(acceptHMRUpdate(useCryptoStore, import.meta.hot));
+}
