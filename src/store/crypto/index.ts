@@ -1,4 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
+import Web3 from 'web3';
 
 const VITE_POLYGON_API_KEY: any = import.meta.env.VITE_POLYGON_API_KEY;
 const POLYGON_API_URL = 'https://api.polygonscan.com/api/';
@@ -15,9 +16,9 @@ interface CryptoStore {
 
 export const useCryptoStore = defineStore('crypto', {
 	state: () => ({
-		contractAbi: {},
+		contractAbi: [],
 		contractAddress: CONTRACT_ADDRESS,
-		contractInstance: null,
+		contractInstance: [] as any,
 	}),
 	actions: {
 		async setContractAbi() {
@@ -31,6 +32,19 @@ export const useCryptoStore = defineStore('crypto', {
 				const res = await fetch(POLYGON_API_URL + '?' + new URLSearchParams(params));
 				const data = await res.json();
 				this.contractAbi = data.result;
+			} catch (e) {
+				console.log(e);
+			}
+		},
+		async setContractInstance() {
+			const web3 = new Web3(Web3.givenProvider);
+			try {
+				const contract = await new web3.eth.Contract(
+					this.contractAbi,
+					this.contractAddress
+				);
+				debugger;
+				this.contractInstance = contract;
 			} catch (e) {
 				console.log(e);
 			}

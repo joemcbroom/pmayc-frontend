@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, computed, ref, watchEffect } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import { useDarkModeStore } from '@/store/darkmode';
-import { mapActions, storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia';
 import sunUrl from '@/assets/sun.svg';
 import moonUrl from '@/assets/moon.svg';
 
