@@ -36,18 +36,18 @@ export const useCryptoStore = defineStore('crypto', {
 				console.log(e);
 			}
 		},
-		async setContractInstance() {
-			const web3 = new Web3(Web3.givenProvider);
-			try {
-				const contract = await new web3.eth.Contract(
-					this.contractAbi,
-					this.contractAddress
-				);
-				debugger;
-				this.contractInstance = contract;
-			} catch (e) {
-				console.log(e);
-			}
-		},
+		// async setContractInstance() {
+		// 	const web3 = new Web3(Web3.givenProvider);
+		// 	try {
+		// 		const contract = await new web3.eth.Contract(
+		// 			this.contractAbi,
+		// 			this.contractAddress
+		// 		);
+		// 		debugger;
+		// 		this.contractInstance = contract;
+		// 	} catch (e) {
+		// 		console.log(e);
+		// 	}
+		// },
 	},
 });
