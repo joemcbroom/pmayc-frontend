@@ -9,7 +9,7 @@ import { onMounted } from 'vue';
 const errorStore = useErrorStore();
 const { error } = storeToRefs(errorStore);
 const crypto = useCryptoStore();
-const { _contractAbi } = storeToRefs(crypto);
+const { contractAbi } = storeToRefs(crypto);
 const { setContractAbi } = crypto;
 
 onMounted(async () => {
