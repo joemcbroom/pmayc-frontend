@@ -22,7 +22,7 @@ export const useCryptoStore = defineStore('crypto', {
 		wrapContractInstance: [] as any,
 		account: '',
 		isBusy: false,
-		balance: 0,
+		balance: '',
 	}),
 	actions: {
 		/**

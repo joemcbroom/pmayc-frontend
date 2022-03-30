@@ -16,9 +16,11 @@ import WalletConnect from './WalletConnect.vue';
 		<dark-selector class="ml-auto" :use-images="true" />
 	</div>
 	<nav
-		class="flex h-10 w-full items-center justify-center border-0 border-b align-middle dark:border-slate-50"
+		class="flex h-10 w-full items-center justify-center gap-4 border-0 border-b align-middle dark:border-slate-50"
 	>
-		<router-link to="/stake">Staking</router-link>
+		<router-link class="hover:underline" to="/">Home</router-link>
+		<router-link class="hover:underline" to="/stake">Staking</router-link>
+		<router-link class="hover:underline" to="/white-paper">White Paper</router-link>
 	</nav>
 </template>
 
