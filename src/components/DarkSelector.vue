@@ -22,7 +22,8 @@ onMounted(() => {
 	// Check localstorage for theme and set it in store
 	const isDark =
 		localStorage.theme === 'dark' ||
-		(!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+		(!('theme' in localStorage) &&
+			window.matchMedia('(prefers-color-scheme: dark)').matches);
 	if (isDark) {
 		setDarkMode(isDark);
 	}

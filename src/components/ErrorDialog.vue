@@ -4,7 +4,7 @@ import DefaultButton from '@/components/DefaultButton.vue';
 import { useErrorStore } from '@/store/error';
 const errorStore = useErrorStore();
 
-const props = defineProps<{
+defineProps<{
 	error: Error;
 }>();
 
@@ -16,7 +16,9 @@ function closeDialog() {
 	<dialog-modal>
 		<h1 class="my-4 px-10 text-3xl">Error!</h1>
 		<p class="mb-6 px-10">{{ error.message }}</p>
-		<div class="flex w-full justify-end border-0 border-t border-slate-400 p-4">
+		<div
+			class="flex w-full justify-end border-0 border-t border-slate-400 p-4"
+		>
 			<default-button text="Close" :action="closeDialog" />
 		</div>
 		<img

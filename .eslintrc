@@ -1,0 +1,28 @@
+{
+	"root": true,
+	"parser": "vue-eslint-parser",
+	"parserOptions": { "parser": "@typescript-eslint/parser" },
+	"plugins": ["@typescript-eslint"],
+	"extends": [
+		"plugin:vue/vue3-essential",
+		"plugin:@typescript-eslint/recommended"
+	],
+	"rules": {
+		// Enable vue/script-setup-uses-vars rule
+		"vue/script-setup-uses-vars": "error",
+		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"vue/html-indent": ["error", "tab", { "baseIndent": 1 }],
+		"vue/html-self-closing": [
+			"error",
+			{
+				"html": {
+					"void": "always",
+					"normal": "always",
+					"component": "always"
+				},
+				"svg": "always",
+				"math": "always"
+			}
+		]
+	}
+}

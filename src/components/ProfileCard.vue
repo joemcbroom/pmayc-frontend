@@ -32,7 +32,11 @@ const toggleDropdown = () => {
 			class="grid h-14 w-14 cursor-pointer place-items-center rounded-full"
 			@click="toggleDropdown"
 		>
-			<img v-if="!profileImage" class="rounded-full dark:invert" :src="profileImageUrl" />
+			<img
+				v-if="!profileImage"
+				class="rounded-full dark:invert"
+				:src="profileImageUrl"
+			/>
 		</div>
 		<div
 			v-show="showDropdown"
@@ -44,7 +48,10 @@ const toggleDropdown = () => {
 				:disabled="isBusy"
 				:action="connectWallet"
 			/>
-			<div v-else class="flex flex-col items-center justify-between text-sm">
+			<div
+				v-else
+				class="flex flex-col items-center justify-between text-sm"
+			>
 				<div>Wallet Id:</div>
 				<div class="mb-4 text-xs">{{ account }}</div>
 				<div>Balance: {{ balance }}</div>

@@ -7,7 +7,7 @@ import { storeToRefs } from 'pinia';
 const crypto = useCryptoStore();
 const { account, balance } = storeToRefs(crypto);
 
-// @ts-expect-error
+// @ts-expect-error It's there, trust me bro
 const { ethereum } = window;
 </script>
 <template>
@@ -25,7 +25,9 @@ const { ethereum } = window;
 			<p>Connected with MetaMask!</p>
 			<img class="aspect-1 w-10" src="@/assets/Metamask-icon.png" />
 		</div>
-		<div class="flex w-full justify-end border-0 border-t border-slate-400 p-4">
+		<div
+			class="flex w-full justify-end border-0 border-t border-slate-400 p-4"
+		>
 			<default-button text="Close" @click="$emit('close')" />
 		</div>
 		<img

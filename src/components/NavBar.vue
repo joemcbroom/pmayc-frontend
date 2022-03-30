@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import DarkSelector from './DarkSelector.vue';
-import WalletConnect from './WalletConnect.vue';
 import ProfileCard from './ProfileCard.vue';
 </script>
 
 <template>
-	<div class="mt-4 flex h-20 w-full items-center justify-center px-2 align-middle lg:px-8">
+	<div
+		class="mt-4 flex h-20 w-full items-center justify-center px-2 align-middle lg:px-8"
+	>
 		<router-link to="/" class="mr-auto w-14">
 			<img
 				class="aspect-1 object-contain"
@@ -21,7 +21,9 @@ import ProfileCard from './ProfileCard.vue';
 	>
 		<router-link class="hover:underline" to="/">Home</router-link>
 		<router-link class="hover:underline" to="/stake">Staking</router-link>
-		<router-link class="hover:underline" to="/white-paper">White Paper</router-link>
+		<router-link class="hover:underline" to="/white-paper">
+			White Paper
+		</router-link>
 	</nav>
 </template>
 

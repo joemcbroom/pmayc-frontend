@@ -1,11 +1,11 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
-import Home from '@/views/Home.vue';
+import HomePage from '@/views/HomePage.vue';
 import WhitePaper from '@/views/WhitePaper.vue';
 import NotFound from '@/views/NotFound.vue';
 import Stake from '@/views/Stake.vue';
 
 const routes: Array<RouteRecordRaw> = [
-	{ path: '/', component: Home, meta: { title: 'Home' } },
+	{ path: '/', component: HomePage, meta: { title: 'Home' } },
 	{
 		path: '/white-paper',
 		meta: { title: 'White Paper' },

@@ -3,7 +3,7 @@ import { useErrorStore } from '@/store/error';
 import { useUserStore } from '@/store/user';
 import { ethers } from 'ethers';
 
-const VITE_POLYGON_API_KEY: any = import.meta.env.VITE_POLYGON_API_KEY;
+const VITE_POLYGON_API_KEY = import.meta.env.VITE_POLYGON_API_KEY;
 const POLYGON_API_URL = 'https://api.polygonscan.com/api/';
 const WRAP_CONTRACT_ADDRESS = '0xA847d6Ef6BebEc22751a91ba9270D23b3FA2fF8C';
 const STAKING_CONTRACT_ADDRESS = '0x42Ed1573EDCeA53ca0453cf6B87AeB67c3fCEbea';
@@ -19,8 +19,8 @@ export const useCryptoStore = defineStore('crypto', {
 	state: () => ({
 		stakingContractAbi: [],
 		wrapContractAbi: [],
-		stakingContractInstance: [] as any,
-		wrapContractInstance: [] as any,
+		stakingContractInstance: null as ethers.Contract | null,
+		wrapContractInstance: null as ethers.Contract | null,
 		account: '',
 		isBusy: false,
 		balance: '',
@@ -41,9 +41,11 @@ export const useCryptoStore = defineStore('crypto', {
 					module: 'contract',
 					action: 'getabi',
 					address: ADDRESSES[adressType],
-					apikey: VITE_POLYGON_API_KEY,
+					apikey: VITE_POLYGON_API_KEY as string,
 				};
-				const res = await fetch(POLYGON_API_URL + '?' + new URLSearchParams(params));
+				const res = await fetch(
+					POLYGON_API_URL + '?' + new URLSearchParams(params)
+				);
 				const { result } = await res.json();
 				switch (adressType) {
 					case 'staking':
@@ -53,8 +55,10 @@ export const useCryptoStore = defineStore('crypto', {
 						this.wrapContractAbi = result;
 						break;
 				}
-			} catch (e) {
-				errorStore.setError(e);
+			} catch (error) {
+				if (error instanceof Error) {
+					errorStore.setError(error);
+				}
 			} finally {
 				this.isBusy = false;
 			}
@@ -64,7 +68,7 @@ export const useCryptoStore = defineStore('crypto', {
 		 * @param contractType string 'staking' or 'wrap'
 		 */
 		async setContractInstance(contractType: string) {
-			const errorStore = useErrorStore();
+			// const errorStore = useErrorStore();
 			this.isBusy = true;
 			if (!Object.keys(ADDRESSES).includes(contractType)) {
 				throw new Error(`Invalid contract type: ${contractType}`);
@@ -73,7 +77,7 @@ export const useCryptoStore = defineStore('crypto', {
 				throw new Error('Connect to metamask first');
 			}
 			try {
-				// @ts-expect-error
+				// @ts-expect-error it's there bro, trust me bro
 				const { ethereum } = window;
 				if (!ethereum) {
 					throw new Error('No ethereum provider (metamask)');
@@ -81,8 +85,14 @@ export const useCryptoStore = defineStore('crypto', {
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
 				const abi =
-					contractType === 'staking' ? this.stakingContractAbi : this.wrapContractAbi;
-				const contract = new ethers.Contract(STAKING_CONTRACT_ADDRESS, abi, signer);
+					contractType === 'staking'
+						? this.stakingContractAbi
+						: this.wrapContractAbi;
+				const contract = new ethers.Contract(
+					STAKING_CONTRACT_ADDRESS,
+					abi,
+					signer
+				);
 				const deposits = await contract.depositsOf(this.account);
 				console.log('deposits', deposits);
 				switch (contractType) {
@@ -104,12 +114,16 @@ export const useCryptoStore = defineStore('crypto', {
 			const userStore = useUserStore();
 			this.isBusy = true;
 			try {
-				// @ts-expect-error
+				// @ts-expect-error it's there bro, trust me bro
 				const { ethereum } = window;
 				if (!ethereum) {
-					throw new Error('You must have the Metamask extension installed');
+					throw new Error(
+						'You must have the Metamask extension installed'
+					);
 				}
-				const [account] = await ethereum.request({ method: 'eth_requestAccounts' });
+				const [account] = await ethereum.request({
+					method: 'eth_requestAccounts',
+				});
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
 				const balance = await signer.getBalance();
@@ -118,7 +132,9 @@ export const useCryptoStore = defineStore('crypto', {
 					balance: ethers.utils.formatEther(balance),
 				});
 			} catch (error) {
-				errorStore.setError(error);
+				if (error instanceof Error) {
+					errorStore.setError(error);
+				}
 			} finally {
 				this.isBusy = false;
 			}

@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 const dialog = ref(null);
 
 onMounted(() => {
-	// @ts-ignore
+	// @ts-expect-error it's there bro, trust me my guy
 	dialog.value.showModal();
 });
 </script>
