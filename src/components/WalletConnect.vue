@@ -8,7 +8,6 @@ const crypto = useCryptoStore();
 const { account, isBusy } = storeToRefs(crypto);
 const { connectWallet } = crypto;
 const errorStore = useErrorStore();
-const { error } = storeToRefs(errorStore);
 
 const connectToWallet = async () => {
 	try {
