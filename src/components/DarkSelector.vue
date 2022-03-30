@@ -35,7 +35,7 @@ onMounted(() => {
 		@click="setDarkMode(!darkMode)"
 	>
 		<div
-			class="ease relative z-0 h-6 w-6 transform rounded-full bg-yellow-500 transition-transform duration-500"
+			class="ease z-0 flex h-6 w-6 transform rounded-full bg-yellow-500 transition-transform duration-500"
 			:class="darkMode ? 'translate-x-full' : 'translate-x-0'"
 		>
 			<img
