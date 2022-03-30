@@ -22,6 +22,7 @@ export const useCryptoStore = defineStore('crypto', {
 		wrapContractInstance: [] as any,
 		account: '',
 		isBusy: false,
+		balance: 0,
 	}),
 	actions: {
 		/**
@@ -107,6 +108,10 @@ export const useCryptoStore = defineStore('crypto', {
 					throw new Error('You must have the Metamask extension installed');
 				}
 				const [account] = await ethereum.request({ method: 'eth_requestAccounts' });
+				const provider = new ethers.providers.Web3Provider(ethereum);
+				const signer = provider.getSigner();
+				const balance = await signer.getBalance();
+				this.balance = ethers.utils.formatEther(balance);
 				this.account = account;
 			} catch (error) {
 				errorStore.setError(error);

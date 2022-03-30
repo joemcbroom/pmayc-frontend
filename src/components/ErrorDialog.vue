@@ -29,6 +29,11 @@ onMounted(() => {
 		<div class="flex w-full justify-end border-0 border-t border-slate-400 p-4">
 			<default-button text="Close" :action="closeDialog" />
 		</div>
+		<img
+			src="@/assets/close-icon.png"
+			class="absolute top-2 right-2 cursor-pointer rounded border p-2"
+			@click="$emit('close')"
+		/>
 	</dialog>
 </template>
 <style lang="scss" scoped>
