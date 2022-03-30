@@ -1,6 +1,6 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import HomePage from '@/views/HomePage.vue';
-import WhitePaper from '@/views/WhitePaper.vue';
+import WhitePaper from '@/views/WhitePapers.vue';
 import NotFound from '@/views/NotFound.vue';
 import Stake from '@/views/Stake.vue';
 
