@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import DarkSelector from './DarkSelector.vue';
+import WalletConnect from './WalletConnect.vue';
 </script>
 
 <template>
-	<div
-		class="flex h-20 w-full items-center justify-center border-0 border-b align-middle dark:border-slate-50"
-	>
-		<img
-			class="absolute left-3 aspect-1 w-20"
-			alt="Vue logo"
-			src="@/assets/pmayc-transparent.png"
-		/>
-		<nav class="flex w-full justify-center gap-2">
-			<router-link to="/">Home</router-link>
-			<router-link to="/about">About</router-link>
-			<router-link to="/stake">Staking</router-link>
-		</nav>
-		<dark-selector :use-images="true" class="absolute right-3" />
+	<div class="mt-4 flex h-20 w-full items-center justify-center px-2 align-middle lg:px-8">
+		<router-link to="/" class="mr-auto w-14">
+			<img
+				class="aspect-1 object-contain"
+				alt="Vue logo"
+				src="@/assets/pmayc-transparent.png"
+			/>
+		</router-link>
+		<wallet-connect />
+		<dark-selector class="ml-auto" :use-images="true" />
 	</div>
+	<nav
+		class="flex h-10 w-full items-center justify-center border-0 border-b align-middle dark:border-slate-50"
+	>
+		<router-link to="/stake">Staking</router-link>
+	</nav>
 </template>
 
 <style scoped></style>

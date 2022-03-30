@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import DefaultButton from '@/components/DefaultButton.vue';
 import { onMounted, ref } from 'vue';
 import { useErrorStore } from '@/store/error';
 const errorStore = useErrorStore();
 
-defineProps<{
+const props = defineProps<{
 	error: Error;
 }>();
 
@@ -26,12 +27,7 @@ onMounted(() => {
 		<h1 class="my-4 px-10 text-3xl">Wait!</h1>
 		<p class="mb-6 px-10">{{ error.message }}</p>
 		<div class="flex w-full justify-end border-0 border-t border-slate-400 p-4">
-			<button
-				class="rounded border border-slate-800 bg-slate-800 px-5 py-2 text-slate-50"
-				@click="closeDialog"
-			>
-				Close
-			</button>
+			<default-button text="Close" :action="closeDialog" />
 		</div>
 	</dialog>
 </template>

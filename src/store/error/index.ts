@@ -3,14 +3,10 @@ import { defineStore, acceptHMRUpdate } from 'pinia';
 export const useErrorStore = defineStore('error', {
 	state: () => ({
 		error: null,
-		errorType: '',
 	}),
 	actions: {
-		setError(error: any, type?: string | null): void {
+		setError(error: any): void {
 			this.error = error;
-			if (type) {
-				this.errorType = type;
-			}
 		},
 	},
 });
