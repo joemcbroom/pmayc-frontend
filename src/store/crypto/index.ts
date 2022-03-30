@@ -139,6 +139,13 @@ export const useCryptoStore = defineStore('crypto', {
 				this.isBusy = false;
 			}
 		},
+		clearUserInfo() {
+			const userStore = useUserStore();
+			userStore.hydrateUser({
+				account: '',
+				balance: '',
+			});
+		},
 	},
 });
 

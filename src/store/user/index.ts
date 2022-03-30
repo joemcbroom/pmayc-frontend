@@ -1,4 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
+import { useStorage } from '@vueuse/core';
 
 /**
  * Pinia store for interacting with the user's account
@@ -17,9 +18,9 @@ interface UserType {
 
 export const useUserStore = defineStore('user', {
 	state: () => ({
-		account: '',
-		balance: '',
-		profileImage: '',
+		account: useStorage('account', ''),
+		balance: useStorage('balance', ''),
+		profileImage: useStorage('profileImage', ''),
 	}),
 	actions: {
 		hydrateUser({ account, balance, profileImage }: UserType) {

@@ -43,7 +43,7 @@ const toggleDropdown = () => {
 			class="absolute top-full right-0 flex min-w-max flex-col items-center justify-evenly gap-6 rounded bg-slate-100 p-6 shadow dark:bg-slate-600 dark:shadow-slate-400"
 		>
 			<default-button
-				v-if="!account"
+				v-if="!user.account"
 				text="Connect to Wallet"
 				:disabled="isBusy"
 				:action="connectWallet"
