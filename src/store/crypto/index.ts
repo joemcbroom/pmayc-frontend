@@ -1,5 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { useErrorStore } from '@/store/error';
+import { useUserStore } from '@/store/user';
 import { ethers } from 'ethers';
 
 const VITE_POLYGON_API_KEY: any = import.meta.env.VITE_POLYGON_API_KEY;
@@ -100,6 +101,7 @@ export const useCryptoStore = defineStore('crypto', {
 		},
 		async connectWallet(): Promise<void> {
 			const errorStore = useErrorStore();
+			const userStore = useUserStore();
 			this.isBusy = true;
 			try {
 				// @ts-expect-error
@@ -111,8 +113,10 @@ export const useCryptoStore = defineStore('crypto', {
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
 				const balance = await signer.getBalance();
-				this.balance = ethers.utils.formatEther(balance);
-				this.account = account;
+				userStore.hydrateUser({
+					account,
+					balance: ethers.utils.formatEther(balance),
+				});
 			} catch (error) {
 				errorStore.setError(error);
 			} finally {

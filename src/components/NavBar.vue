@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import DarkSelector from './DarkSelector.vue';
 import WalletConnect from './WalletConnect.vue';
+import ProfileCard from './ProfileCard.vue';
 </script>
 
 <template>
@@ -12,8 +13,8 @@ import WalletConnect from './WalletConnect.vue';
 				src="@/assets/pmayc-transparent.png"
 			/>
 		</router-link>
-		<wallet-connect />
-		<dark-selector class="ml-auto" :use-images="true" />
+		<h1 class="text-sm lg:text-xl">Phunky Mutant Ape Yacht Club</h1>
+		<profile-card class="ml-auto" />
 	</div>
 	<nav
 		class="flex h-10 w-full items-center justify-center gap-4 border-0 border-b align-middle dark:border-slate-50"
@@ -24,4 +25,8 @@ import WalletConnect from './WalletConnect.vue';
 	</nav>
 </template>
 
-<style scoped></style>
+<style scoped>
+.router-link-active {
+	text-decoration: underline;
+}
+</style>

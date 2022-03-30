@@ -1,6 +1,6 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
-import Whitepaper from '@/views/Whitepaper.vue';
+import WhitePaper from '@/views/WhitePaper.vue';
 import NotFound from '@/views/NotFound.vue';
 import Stake from '@/views/Stake.vue';
 
@@ -9,7 +9,7 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: '/white-paper',
 		meta: { title: 'White Paper' },
-		component: Whitepaper,
+		component: WhitePaper,
 	},
 	{ path: '/stake', component: Stake, meta: { title: 'Staking' } },
 	{ path: '/:path(.*)', component: NotFound },
