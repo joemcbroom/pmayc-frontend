@@ -17,7 +17,10 @@ export default class RestService {
 	 * this class.
 	 */
 	constructor(endpoint: string) {
-		this.endpointUrl = `${import.meta.env.VITE_IMAGES_API_URL}/${endpoint}`;
+		this.endpointUrl = `${
+			import.meta.env.VITE_IMAGES_API_URL ||
+			'https://gutdraw.pythonanywhere.com'
+		}/${endpoint}`;
 	}
 
 	/**
