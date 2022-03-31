@@ -10,12 +10,6 @@ import { useStorage } from '@vueuse/core';
  *
  */
 
-interface UserType {
-	account: string;
-	balance: string;
-	profileImage?: string;
-}
-
 export const useUserStore = defineStore('user', {
 	state: () => ({
 		account: useStorage('account', ''),

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ProfileCard from './ProfileCard.vue';
+import { routes } from '@/router';
 </script>
 
 <template>
@@ -19,11 +20,19 @@ import ProfileCard from './ProfileCard.vue';
 	<nav
 		class="flex h-10 w-full items-center justify-center gap-4 border-0 border-b align-middle dark:border-slate-50"
 	>
-		<router-link class="hover:underline" to="/">Home</router-link>
+		<router-link
+			v-for="route in routes.filter((route) => route.name !== 'NotFound')"
+			class="hover:underline"
+			:to="route.path"
+			:key="route.path"
+		>
+			{{ route.name }}
+		</router-link>
+		<!-- <router-link class="hover:underline" to="/">Home</router-link>
 		<router-link class="hover:underline" to="/stake">Staking</router-link>
 		<router-link class="hover:underline" to="/white-paper">
 			White Paper
-		</router-link>
+		</router-link> -->
 	</nav>
 </template>
 

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 
-import { useCryptoStore } from '@/store/crypto';
+import { useUserStore } from '@/store/user';
 
-const crypto = useCryptoStore();
-const { account } = storeToRefs(crypto);
+const user = useUserStore();
+const { account } = storeToRefs(user);
 </script>
 <template>
 	<h1>Staking Portal</h1>
