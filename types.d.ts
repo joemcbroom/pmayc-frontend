@@ -19,3 +19,14 @@ interface NftData {
 	secure_url: string;
 	token_id: number;
 }
+
+interface ImportMeta {
+	env: {
+		GITHUB_AUTH_TOKEN: string;
+		NODE_ENV: 'development' | 'production';
+		PORT?: string;
+		PWD: string;
+		VITE_POLYGON_API_KEY: string;
+		VITE_IMAGES_API_URL: string;
+	};
+}

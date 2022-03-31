@@ -5,27 +5,36 @@ import { onMounted, Ref, ref } from 'vue';
 import MutantDataService from '@/services/MutantDataService';
 import gsap from 'gsap';
 import LoadingSpinners from '@/components/LoadingSpinners.vue';
+import { storeToRefs } from 'pinia';
 
 const crypto = useCryptoStore();
 
-const { initAbiAndContracts, getNFTs } = crypto;
+const { getNFTs } = crypto;
+
+const { isBusy } = storeToRefs(crypto);
 
 const nftsOwned = ref([]) as Ref<number[]>;
 let nftData = ref([]) as Ref<NftData[]>;
-let isBusy = ref(false) as Ref<boolean>;
 
 const getNFTsFromContract = async () => {
-	isBusy.value = true;
-	const res = await getNFTs();
-	if (res && res.length) {
+	try {
+		isBusy.value = true;
+		const res = await getNFTs();
+		if (!res || !res.length) {
+			return;
+		}
 		nftsOwned.value = res;
+		const mutantDataService = new MutantDataService();
+		const nftDataFromDb = (await mutantDataService.getMutantDataByIds(
+			nftsOwned.value
+		)) as NftData[];
+		nftData.value = nftDataFromDb;
+		isBusy.value = false;
+	} catch (e) {
+		console.error(e);
+	} finally {
+		isBusy.value = false;
 	}
-	const mutantDataService = new MutantDataService();
-	const nftDataFromDb = (await mutantDataService.getMutantDataByIds(
-		nftsOwned.value
-	)) as NftData[];
-	nftData.value = nftDataFromDb;
-	isBusy.value = false;
 };
 
 const beforeEnter = (el) => {
@@ -43,16 +52,12 @@ const enter = (el, done: gsap.Callback) => {
 		delay: +index * 0.2,
 	});
 };
-
-onMounted(async () => {
-	await initAbiAndContracts('mutants');
-});
 </script>
 <template>
 	<default-button
-		v-if="crypto.mutantsContractInstance"
 		text="See your mutants"
 		:action="getNFTsFromContract"
+		:disabled="isBusy"
 	/>
 	<loading-spinners v-if="isBusy" />
 	<transition-group

@@ -2,9 +2,9 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"module": "ESNext",
-		"target": "es2016",
+		"target": "esNext",
 		"lib": ["DOM", "ESNext"],
-		"types": ["node"],
+		"types": ["node", "vite/client"],
 		"strict": true,
 		"esModuleInterop": true,
 		"incremental": false,
@@ -17,7 +17,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"paths": {
 			"@/*": ["src/*"]
-		}
+		},
 	},
 	"exclude": ["dist", "node_modules"]
 }
