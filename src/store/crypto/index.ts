@@ -7,58 +7,61 @@ const VITE_POLYGON_API_KEY = import.meta.env.VITE_POLYGON_API_KEY;
 const POLYGON_API_URL = 'https://api.polygonscan.com/api/';
 const WRAP_CONTRACT_ADDRESS = '0xA847d6Ef6BebEc22751a91ba9270D23b3FA2fF8C';
 const STAKING_CONTRACT_ADDRESS = '0x42Ed1573EDCeA53ca0453cf6B87AeB67c3fCEbea';
+const MUTANTS_ORG_ADDRESS = '0xdFF760Ec52a498464c670B680DC81e6861f10BAd';
 
 const ADDRESSES = {
 	staking: WRAP_CONTRACT_ADDRESS,
 	wrap: STAKING_CONTRACT_ADDRESS,
+	mutants: MUTANTS_ORG_ADDRESS,
 };
 
 // Pinia store for integrating with metamask, etc
 
 export const useCryptoStore = defineStore('crypto', {
 	state: () => ({
-		stakingContractAbi: [],
-		wrapContractAbi: [],
-		stakingContractInstance: null as ethers.Contract | null,
-		wrapContractInstance: null as ethers.Contract | null,
-		account: '',
+		abis: {
+			staking: [],
+			wrap: [],
+			mutants: [],
+		},
+		contracts: {
+			staking: null as ethers.Contract | null,
+			wrap: null as ethers.Contract | null,
+			mutants: null as ethers.Contract | null,
+		},
 		isBusy: false,
-		balance: '',
 	}),
 	actions: {
 		/**
 		 *
-		 * @param adressType string 'staking' or 'wrap'
+		 * @param contractType string 'staking', 'wrap', or 'mutants'
 		 */
-		async setContractAbi(adressType: string) {
-			const errorStore = useErrorStore();
-			this.isBusy = true;
-			if (!Object.keys(ADDRESSES).includes(adressType)) {
-				throw new Error(`Invalid contract type: ${adressType}`);
-			}
+		async getContractAbi(contractType: string): Promise<[] | undefined> {
 			try {
+				const address = ADDRESSES[contractType];
+				if (!address) {
+					throw new Error(
+						`No address for contract type: ${contractType}`
+					);
+				}
+				if (this.abis[contractType].length) {
+					return this.abis[contractType];
+				}
+				this.isBusy = true;
 				const params = {
 					module: 'contract',
 					action: 'getabi',
-					address: ADDRESSES[adressType],
+					address,
 					apikey: VITE_POLYGON_API_KEY as string,
 				};
 				const res = await fetch(
 					POLYGON_API_URL + '?' + new URLSearchParams(params)
 				);
 				const { result } = await res.json();
-				switch (adressType) {
-					case 'staking':
-						this.stakingContractAbi = result;
-						break;
-					case 'wrap':
-						this.wrapContractAbi = result;
-						break;
-				}
+				this.abis[contractType] = result;
+				return result;
 			} catch (error) {
-				if (error instanceof Error) {
-					errorStore.setError(error);
-				}
+				throw error;
 			} finally {
 				this.isBusy = false;
 			}
@@ -67,44 +70,82 @@ export const useCryptoStore = defineStore('crypto', {
 		 *
 		 * @param contractType string 'staking' or 'wrap'
 		 */
-		async setContractInstance(contractType: string) {
-			// const errorStore = useErrorStore();
-			this.isBusy = true;
-			if (!Object.keys(ADDRESSES).includes(contractType)) {
-				throw new Error(`Invalid contract type: ${contractType}`);
-			}
-			if (!this.account) {
-				throw new Error('Connect to metamask first');
-			}
+		async getContractInstance(
+			contractType: string
+		): Promise<ethers.Contract> {
+			const userStore = useUserStore();
 			try {
+				const address = ADDRESSES[contractType];
+				if (!address) {
+					throw new Error(
+						`No address for contract type: ${contractType}`
+					);
+				}
 				// @ts-expect-error it's there bro, trust me bro
 				const { ethereum } = window;
 				if (!ethereum) {
-					throw new Error('No ethereum provider (metamask)');
+					throw new Error(
+						'No ethereum provider detected \n Install Metamask extension or use a dapp browser'
+					);
 				}
+				if (!userStore.account) {
+					throw new Error('Connect to metamask first');
+				}
+				if (this.contracts[contractType]) {
+					return this.contracts[contractType];
+				}
+				this.isBusy = true;
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
-				const abi =
-					contractType === 'staking'
-						? this.stakingContractAbi
-						: this.wrapContractAbi;
+
+				const contractAbi = (await this.getContractAbi(
+					contractType
+				)) as [];
+
 				const contract = new ethers.Contract(
-					STAKING_CONTRACT_ADDRESS,
-					abi,
+					ADDRESSES[contractType],
+					contractAbi,
 					signer
 				);
-				const deposits = await contract.depositsOf(this.account);
-				console.log('deposits', deposits);
-				switch (contractType) {
-					case 'staking':
-						this.stakingContractInstance = contract;
-						break;
-					case 'wrap':
-						this.wrapContractInstance = contract;
-						break;
+
+				this.contracts[contractType] = contract;
+				return contract;
+			} catch (error) {
+				throw error;
+			} finally {
+				this.isBusy = false;
+			}
+		},
+		async getNFTs(): Promise<number[] | undefined> {
+			const errorStore = useErrorStore();
+			const user = useUserStore();
+
+			try {
+				this.isBusy = true;
+				const nfts: number[] = [];
+				const contractInstance = await this.getContractInstance(
+					'mutants'
+				);
+				const res = await contractInstance.balanceOf(user.account);
+				const count = res.toNumber();
+				const arr = [...Array(count)];
+
+				await Promise.all(
+					arr.map(async (_, i) => {
+						const id = await contractInstance?.tokenOfOwnerByIndex(
+							user.account,
+							i
+						);
+						nfts.push(id.toNumber());
+					})
+				);
+
+				return nfts;
+			} catch (error) {
+				console.error(error);
+				if (error instanceof Error) {
+					errorStore.setError(error);
 				}
-			} catch (e) {
-				console.log(e);
 			} finally {
 				this.isBusy = false;
 			}
