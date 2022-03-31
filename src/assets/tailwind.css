@@ -6,3 +6,18 @@
 	-webkit-tap-highlight-color: transparent;
 	padding: 0;
 }
+
+@layer utilities {
+	.rotate-y-180 {
+		transform: rotateY(180deg);
+	}
+	.backface-hidden {
+		backface-visibility: hidden;
+	}
+	.preserve-3d {
+		transform-style: preserve-3d;
+	}
+	.perspective-600 {
+		perspective: 600px;
+	}
+}

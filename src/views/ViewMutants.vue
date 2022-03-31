@@ -6,6 +6,7 @@ import MutantDataService from '@/services/MutantDataService';
 import gsap from 'gsap';
 import LoadingSpinners from '@/components/LoadingSpinners.vue';
 import { storeToRefs } from 'pinia';
+import FlipCard from '@/components/FlipCard.vue';
 
 const crypto = useCryptoStore();
 
@@ -28,6 +29,9 @@ const getNFTsFromContract = async () => {
 		const nftDataFromDb = (await mutantDataService.getMutantDataByIds(
 			nftsOwned.value
 		)) as NftData[];
+		nftDataFromDb.map((nft) => {
+			nft.traits = JSON.parse(nft.attributes.replace(/'/g, '"'));
+		});
 		nftData.value = nftDataFromDb;
 		isBusy.value = false;
 	} catch (e) {
@@ -76,10 +80,29 @@ const enter = (el, done: gsap.Callback) => {
 			class="aspect-1 w-3/12"
 			:data-index="i"
 		>
-			<img
-				:src="nft.secure_url"
-				class="scale-100 transform transition-transform duration-500 hover:scale-110"
-			/>
+			<flip-card>
+				<template #front>
+					<img :src="nft.secure_url" />
+				</template>
+				<template #back>
+					<div
+						class="flex h-full flex-col items-start justify-evenly overflow-hidden"
+					>
+						<div
+							v-for="{ trait_type, value } in nft.traits"
+							class="flex items-center"
+							:key="trait_type"
+						>
+							<div class="text-lg font-bold">
+								{{ trait_type }}:
+							</div>
+							<div class="pl-2">
+								{{ value }}
+							</div>
+						</div>
+					</div>
+				</template>
+			</flip-card>
 		</div>
 	</transition-group>
 </template>
