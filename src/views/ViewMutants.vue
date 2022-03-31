@@ -4,6 +4,7 @@ import { useCryptoStore } from '@/store/crypto';
 import { onMounted, Ref, ref } from 'vue';
 import MutantDataService from '@/services/MutantDataService';
 import gsap from 'gsap';
+import LoadingSpinners from '@/components/LoadingSpinners.vue';
 
 const crypto = useCryptoStore();
 
@@ -11,8 +12,10 @@ const { initAbiAndContracts, getNFTs } = crypto;
 
 const nftsOwned = ref([]) as Ref<number[]>;
 let nftData = ref([]) as Ref<NftData[]>;
+let isBusy = ref(false) as Ref<boolean>;
 
 const getNFTsFromContract = async () => {
+	isBusy.value = true;
 	const res = await getNFTs();
 	if (res && res.length) {
 		nftsOwned.value = res;
@@ -22,6 +25,7 @@ const getNFTsFromContract = async () => {
 		nftsOwned.value
 	)) as NftData[];
 	nftData.value = nftDataFromDb;
+	isBusy.value = false;
 };
 
 const beforeEnter = (el) => {
@@ -50,10 +54,7 @@ onMounted(async () => {
 		text="See your mutants"
 		:action="getNFTsFromContract"
 	/>
-	<div
-		class="h-12 w-12 animate-spin rounded-full border-0 border-t-2 border-t-sky-300"
-		v-else
-	/>
+	<loading-spinners v-if="isBusy" />
 	<transition-group
 		appear
 		name="fade"
