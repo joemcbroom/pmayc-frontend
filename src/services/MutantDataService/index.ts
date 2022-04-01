@@ -30,7 +30,9 @@ export default class MutantDataService extends RestService {
 	 *
 	 */
 	async getMutantDataByIds(ids: number[]): Promise<NftData[]> {
-		const urlParams = `${ids.join(',')}`;
+		// limit 200 ids
+		const idsToFetch = ids.slice(0, 200);
+		const urlParams = `${idsToFetch.join(',')}`;
 		const res = await this.get({ urlParams });
 		return res as NftData[];
 	}
