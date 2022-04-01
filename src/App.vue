@@ -32,7 +32,7 @@ const { error } = storeToRefs(errorStore);
 	<nav-bar />
 	<main class="container mx-auto mt-6 text-center">
 		<router-view />
-		<error-dialog v-if="error" :error="error" />
+		<error-dialog v-if="error" :error="(error as Error)" />
 	</main>
 </template>
 

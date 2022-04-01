@@ -1,10 +1,24 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 const dialog = ref(null);
+
+const emit = defineEmits(['close']);
+
+const handleEvent = (e: Event) => {
+	if (e.target === dialog.value) {
+		// @ts-expect-error it's there bro, trust me my guy
+		if (![...dialog.value.children].includes(e.target)) emit('close');
+	}
+};
 
 onMounted(() => {
 	// @ts-expect-error it's there bro, trust me my guy
 	dialog.value.showModal();
+	window.addEventListener('click', handleEvent);
+});
+
+onUnmounted(() => {
+	window.removeEventListener('click', handleEvent);
 });
 </script>
 <template>

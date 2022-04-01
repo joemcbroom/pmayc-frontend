@@ -2,10 +2,11 @@ import { defineStore, acceptHMRUpdate } from 'pinia';
 
 export const useErrorStore = defineStore('error', {
 	state: () => ({
-		error: null as Error | CryptoError | null,
+		error: null as Error | null,
+		highlightProfile: false as boolean,
 	}),
 	actions: {
-		setError(error: Error | null | CryptoError): void {
+		setError(error: Error | null): void {
 			this.error = error;
 		},
 	},

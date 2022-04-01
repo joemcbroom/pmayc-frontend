@@ -15,14 +15,12 @@ const ADDRESSES = {
 	mutants: MUTANTS_ORG_ADDRESS,
 };
 
-declare global {
-	enum CryptoErrorTypes {
-		INVALID_ADDRESS = 'INVALID_ADDRESS',
-		NO_PROVIDER = 'NO_PROVIDER',
-		NO_WALLET = 'NO_WALLET',
-		NO_BALANCE = 'NO_BALANCE',
-		ALREADY_PROCESSING = 'ALREADY_PROCESSING',
-	}
+enum CryptoErrorTypes {
+	INVALID_ADDRESS = 'INVALID_ADDRESS',
+	NO_PROVIDER = 'NO_PROVIDER',
+	NO_WALLET = 'NO_WALLET',
+	NO_BALANCE = 'NO_BALANCE',
+	ALREADY_PROCESSING = 'ALREADY_PROCESSING',
 }
 
 class CryptoError extends Error {
@@ -93,7 +91,6 @@ export const useCryptoStore = defineStore('crypto', {
 		async getContractInstance(
 			contractType: string
 		): Promise<ethers.Contract> {
-			const userStore = useUserStore();
 			try {
 				const address = ADDRESSES[contractType];
 				if (!address) {
@@ -114,7 +111,7 @@ export const useCryptoStore = defineStore('crypto', {
 				const wallet = await this.getWallet(provider);
 				if (!wallet) {
 					throw new CryptoError(
-						'No wallet detected, check your provider (eg. Metamask)',
+						'No wallet detected, please connect your wallet',
 						CryptoErrorTypes.NO_WALLET
 					);
 				}
@@ -167,7 +164,6 @@ export const useCryptoStore = defineStore('crypto', {
 
 				return nfts;
 			} catch (error: unknown) {
-				console.error(error);
 				errorStore.setError(error as Error | CryptoError);
 			} finally {
 				this.isBusy = false;

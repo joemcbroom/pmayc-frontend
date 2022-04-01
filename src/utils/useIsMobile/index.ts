@@ -1,8 +1,8 @@
-import { ref, onMounted, computed, onBeforeUnmount, onUnmounted } from 'vue';
+import { ref, onMounted, computed, onUnmounted } from 'vue';
 
 export const useIsMobile = () => {
-	let width = ref(0);
-	let isMobile = computed(() => width.value < 768);
+	const width = ref(0);
+	const isMobile = computed(() => width.value < 768);
 
 	const handleResize = () => {
 		width.value = window.innerWidth;

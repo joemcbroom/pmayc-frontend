@@ -2,15 +2,19 @@
 import DefaultButton from './DefaultButton.vue';
 import { useUserStore } from '@/store/user';
 import { useCryptoStore } from '@/store/crypto';
+import { useErrorStore } from '@/store/error';
 import { computed, ref } from '@vue/reactivity';
 import { storeToRefs } from 'pinia';
 import userLoggedOut from '@/assets/user-outline.png';
 import userLoggedIn from '@/assets/user-fill.png';
 import DarkSelector from './DarkSelector.vue';
+import { watch } from 'vue';
 const crypto = useCryptoStore();
 const user = useUserStore();
 const { account, balance, profileImage } = storeToRefs(user);
+const errorStore = useErrorStore();
 const { isBusy } = storeToRefs(crypto);
+const { highlightProfile } = storeToRefs(errorStore);
 const { connectWallet } = crypto;
 
 const profileImageUrl = computed(() => {
@@ -22,14 +26,24 @@ const profileImageUrl = computed(() => {
 
 let showDropdown = ref(false);
 
+watch(highlightProfile, (newValue) => {
+	if (newValue) {
+		setTimeout(() => {
+			highlightProfile.value = false;
+		}, 5000);
+	}
+});
+
 const toggleDropdown = () => {
 	showDropdown.value = !showDropdown.value;
+	highlightProfile.value = false;
 };
 </script>
 <template>
 	<div class="relative">
 		<div
 			class="grid h-14 w-14 cursor-pointer place-items-center rounded-full"
+			:class="highlightProfile ? ' animate-bounce' : ''"
 			@click="toggleDropdown"
 		>
 			<img

@@ -1,4 +1,12 @@
-interface CryptoError {
+enum CryptoErrorTypes {
+	INVALID_ADDRESS = 'INVALID_ADDRESS',
+	NO_PROVIDER = 'NO_PROVIDER',
+	NO_WALLET = 'NO_WALLET',
+	NO_BALANCE = 'NO_BALANCE',
+	ALREADY_PROCESSING = 'ALREADY_PROCESSING',
+}
+
+interface Error {
 	type: CryptoErrorTypes;
 	name: string;
 	message: string;
