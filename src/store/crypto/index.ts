@@ -15,6 +15,23 @@ const ADDRESSES = {
 	mutants: MUTANTS_ORG_ADDRESS,
 };
 
+enum CryptoErrorTypes {
+	INVALID_ADDRESS = 'INVALID_ADDRESS',
+	NO_PROVIDER = 'NO_PROVIDER',
+	NO_WALLET = 'NO_WALLET',
+	NO_BALANCE = 'NO_BALANCE',
+	ALREADY_PROCESSING = 'ALREADY_PROCESSING',
+}
+
+class CryptoError extends Error {
+	type: CryptoErrorTypes;
+	constructor(message: string, type: CryptoErrorTypes) {
+		super(message);
+		this.name = 'CryptoError';
+		this.type = type;
+	}
+}
+
 // Pinia store for integrating with metamask, etc
 
 export const useCryptoStore = defineStore('crypto', {
@@ -24,11 +41,11 @@ export const useCryptoStore = defineStore('crypto', {
 			wrap: [],
 			mutants: [],
 		},
-		contracts: {
-			staking: null as ethers.Contract | null,
-			wrap: null as ethers.Contract | null,
-			mutants: null as ethers.Contract | null,
-		},
+
+		staking: null as ethers.Contract | null,
+		wrap: null as ethers.Contract | null,
+		mutants: null as ethers.Contract | null,
+
 		isBusy: false,
 	}),
 	actions: {
@@ -40,8 +57,9 @@ export const useCryptoStore = defineStore('crypto', {
 			try {
 				const address = ADDRESSES[contractType];
 				if (!address) {
-					throw new Error(
-						`No address for contract type: ${contractType}`
+					throw new CryptoError(
+						`No address found for contract type ${contractType}`,
+						CryptoErrorTypes.INVALID_ADDRESS
 					);
 				}
 				if (this.abis[contractType].length) {
@@ -77,27 +95,33 @@ export const useCryptoStore = defineStore('crypto', {
 			try {
 				const address = ADDRESSES[contractType];
 				if (!address) {
-					throw new Error(
-						`No address for contract type: ${contractType}`
+					throw new CryptoError(
+						`No address for contract type: ${contractType}`,
+						CryptoErrorTypes.INVALID_ADDRESS
 					);
 				}
 				// @ts-expect-error it's there bro, trust me bro
 				const { ethereum } = window;
 				if (!ethereum) {
-					throw new Error(
-						'No ethereum provider detected \n Install Metamask extension or use a dapp browser'
+					throw new CryptoError(
+						'No ethereum provider detected',
+						CryptoErrorTypes.NO_PROVIDER
 					);
 				}
-				if (!userStore.account) {
-					throw new Error('Connect to metamask first');
+				const provider = new ethers.providers.Web3Provider(ethereum);
+				const wallet = await this.getWallet(provider);
+				if (!wallet) {
+					throw new CryptoError(
+						'No wallet detected, check your provider (eg. Metamask)',
+						CryptoErrorTypes.NO_WALLET
+					);
 				}
-				if (this.contracts[contractType]) {
-					return this.contracts[contractType];
+				const signer = provider.getSigner();
+				debugger;
+				if (this[contractType]) {
+					return this[contractType];
 				}
 				this.isBusy = true;
-				const provider = new ethers.providers.Web3Provider(ethereum);
-				const signer = provider.getSigner();
-
 				const contractAbi = (await this.getContractAbi(
 					contractType
 				)) as [];
@@ -108,7 +132,7 @@ export const useCryptoStore = defineStore('crypto', {
 					signer
 				);
 
-				this.contracts[contractType] = contract;
+				this[contractType] = contract;
 				return contract;
 			} catch (error) {
 				throw error;
@@ -141,11 +165,9 @@ export const useCryptoStore = defineStore('crypto', {
 				);
 
 				return nfts;
-			} catch (error) {
+			} catch (error: unknown) {
 				console.error(error);
-				if (error instanceof Error) {
-					errorStore.setError(error);
-				}
+				errorStore.setError(error as Error | CryptoError);
 			} finally {
 				this.isBusy = false;
 			}
@@ -158,13 +180,20 @@ export const useCryptoStore = defineStore('crypto', {
 				// @ts-expect-error it's there bro, trust me bro
 				const { ethereum } = window;
 				if (!ethereum) {
-					throw new Error(
-						'You must have the Metamask extension installed'
+					throw new CryptoError(
+						'No ethereum provider detected',
+						CryptoErrorTypes.NO_PROVIDER
 					);
 				}
 				const [account] = await ethereum.request({
 					method: 'eth_requestAccounts',
 				});
+				if (!account) {
+					throw new CryptoError(
+						'No wallet detected',
+						CryptoErrorTypes.NO_WALLET
+					);
+				}
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
 				const balance = await signer.getBalance();
@@ -172,9 +201,16 @@ export const useCryptoStore = defineStore('crypto', {
 					account,
 					balance: ethers.utils.formatEther(balance),
 				});
-			} catch (error) {
-				if (error instanceof Error) {
-					errorStore.setError(error);
+			} catch (error: any) {
+				if (error.message.match(/already processing/i)) {
+					errorStore.setError(
+						new CryptoError(
+							'Already initiated, check your wallet provider (eg. Metamask)',
+							CryptoErrorTypes.ALREADY_PROCESSING
+						)
+					);
+				} else {
+					errorStore.setError(error as Error | CryptoError);
 				}
 			} finally {
 				this.isBusy = false;
@@ -186,6 +222,12 @@ export const useCryptoStore = defineStore('crypto', {
 				account: '',
 				balance: '',
 			});
+		},
+		async getWallet(
+			provider: ethers.providers.Web3Provider
+		): Promise<string | undefined> {
+			const [accounts] = await provider.listAccounts();
+			return accounts;
 		},
 	},
 });

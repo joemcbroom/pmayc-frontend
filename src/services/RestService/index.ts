@@ -27,6 +27,7 @@ export default class RestService {
 	 * Fetches the resource from the server.
 	 *
 	 * @param {Object} params - The parameters to pass to the server.
+	 * @param {string} urlParams - The URL parameters to pass to the server.
 	 * @returns {Promise<Object>} - The response from the server.
 	 * @memberof RestService
 	 *

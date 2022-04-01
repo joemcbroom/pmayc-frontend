@@ -40,7 +40,7 @@ const toggleDropdown = () => {
 		</div>
 		<div
 			v-show="showDropdown"
-			class="absolute top-full right-0 flex min-w-max flex-col items-center justify-evenly gap-6 rounded bg-slate-100 p-6 shadow dark:bg-slate-600 dark:shadow-slate-400"
+			class="absolute top-full right-0 z-50 flex w-80 flex-col items-center justify-evenly gap-6 rounded bg-slate-100 p-6 shadow dark:bg-slate-600 dark:shadow-slate-400"
 		>
 			<default-button
 				v-if="!user.account"

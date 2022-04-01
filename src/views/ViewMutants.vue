@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import DefaultButton from '@/components/DefaultButton.vue';
 import { useCryptoStore } from '@/store/crypto';
-import { onMounted, Ref, ref } from 'vue';
+import { useUserStore } from '@/store/user';
+import { Ref, ref } from 'vue';
 import MutantDataService from '@/services/MutantDataService';
 import gsap from 'gsap';
 import LoadingSpinners from '@/components/LoadingSpinners.vue';
@@ -9,13 +10,13 @@ import { storeToRefs } from 'pinia';
 import FlipCard from '@/components/FlipCard.vue';
 
 const crypto = useCryptoStore();
-
 const { getNFTs } = crypto;
-
 const { isBusy } = storeToRefs(crypto);
 
+const user = useUserStore();
+const { unstakedMutants } = storeToRefs(user);
+
 const nftsOwned = ref([]) as Ref<number[]>;
-let nftData = ref([]) as Ref<NftData[]>;
 
 const getNFTsFromContract = async () => {
 	try {
@@ -29,7 +30,7 @@ const getNFTsFromContract = async () => {
 		const nftDataFromDb = (await mutantDataService.getMutantDataByIds(
 			nftsOwned.value
 		)) as NftData[];
-		nftData.value = nftDataFromDb;
+		unstakedMutants.value = nftDataFromDb;
 		isBusy.value = false;
 	} catch (e) {
 		console.error(e);
@@ -56,7 +57,7 @@ const enter = (el, done: gsap.Callback) => {
 </script>
 <template>
 	<default-button
-		text="See your mutants"
+		:text="!unstakedMutants.length ? 'See your mutants' : 'Refresh'"
 		:action="getNFTsFromContract"
 		:disabled="isBusy"
 	/>
@@ -68,39 +69,33 @@ const enter = (el, done: gsap.Callback) => {
 		:css="false"
 		@before-enter="beforeEnter"
 		@enter="enter"
-		v-if="nftData.length"
+		v-if="unstakedMutants.length"
 		class="mt-4 flex flex-wrap justify-center gap-6"
 	>
-		<div
-			v-for="(nft, i) in nftData"
+		<flip-card
+			v-for="(nft, i) in unstakedMutants"
 			:key="nft.token_id"
-			class="aspect-1 w-3/12"
+			class="aspect-1 w-3/12 xl:w-2/12"
 			:data-index="i"
 		>
-			<flip-card>
-				<template #front>
-					<img :src="nft.secure_url" />
-				</template>
-				<template #back>
+			<template #front>
+				<img :src="nft.secure_url" />
+			</template>
+			<template #back>
+				<div class="flex h-full flex-col items-start justify-evenly">
 					<div
-						class="flex h-full flex-col items-start justify-evenly"
+						v-for="{ trait_type, value } in nft.attributes"
+						class="flex flex-wrap items-center"
+						:key="trait_type"
 					>
-						<div
-							v-for="{ trait_type, value } in nft.attributes"
-							class="flex items-center"
-							:key="trait_type"
-						>
-							<div class="text-lg font-bold">
-								{{ trait_type }}:
-							</div>
-							<div class="pl-2">
-								{{ value }}
-							</div>
+						<div class="text-sm font-bold">{{ trait_type }}:</div>
+						<div class="pl-2 text-xs">
+							{{ value }}
 						</div>
 					</div>
-				</template>
-			</flip-card>
-		</div>
+				</div>
+			</template>
+		</flip-card>
 	</transition-group>
 </template>
 <style lang="scss"></style>

@@ -15,6 +15,8 @@ export const useUserStore = defineStore('user', {
 		account: useStorage('account', ''),
 		balance: useStorage('balance', ''),
 		profileImage: useStorage('profileImage', ''),
+		unstakedMutants: [] as NftData[],
+		stakedMutants: [] as NftData[],
 	}),
 	actions: {
 		hydrateUser({ account, balance, profileImage }: UserType) {
