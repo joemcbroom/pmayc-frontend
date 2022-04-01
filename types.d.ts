@@ -14,11 +14,10 @@ interface NftTrait {
 	value: string;
 }
 interface NftData {
-	attributes: string;
+	attributes: NftTrait[];
 	image: string;
 	secure_url: string;
 	token_id: number;
-	traits: NftTrait[];
 }
 
 interface ImportMeta {

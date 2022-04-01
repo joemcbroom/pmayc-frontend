@@ -29,9 +29,6 @@ const getNFTsFromContract = async () => {
 		const nftDataFromDb = (await mutantDataService.getMutantDataByIds(
 			nftsOwned.value
 		)) as NftData[];
-		nftDataFromDb.map((nft) => {
-			nft.traits = JSON.parse(nft.attributes.replace(/'/g, '"'));
-		});
 		nftData.value = nftDataFromDb;
 		isBusy.value = false;
 	} catch (e) {
@@ -86,10 +83,10 @@ const enter = (el, done: gsap.Callback) => {
 				</template>
 				<template #back>
 					<div
-						class="flex h-full flex-col items-start justify-evenly overflow-hidden"
+						class="flex h-full flex-col items-start justify-evenly"
 					>
 						<div
-							v-for="{ trait_type, value } in nft.traits"
+							v-for="{ trait_type, value } in nft.attributes"
 							class="flex items-center"
 							:key="trait_type"
 						>
