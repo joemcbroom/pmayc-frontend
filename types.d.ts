@@ -1,3 +1,9 @@
+interface CryptoError {
+	type: CryptoErrorTypes;
+	name: string;
+	message: string;
+}
+
 interface RestServiceGetOptions {
 	params?: {};
 	urlParams?: string;
