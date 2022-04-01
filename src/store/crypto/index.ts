@@ -128,7 +128,7 @@ export const useCryptoStore = defineStore('crypto', {
 				);
 				const res = await contractInstance.balanceOf(user.account);
 				const count = res.toNumber();
-				const arr = [...Array(count)];
+				const arr = [...Array(Math.min(count, 100))];
 
 				await Promise.all(
 					arr.map(async (_, i) => {
