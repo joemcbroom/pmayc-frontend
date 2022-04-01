@@ -119,7 +119,6 @@ export const useCryptoStore = defineStore('crypto', {
 					);
 				}
 				const signer = provider.getSigner();
-				debugger;
 				if (this[contractType]) {
 					return this[contractType];
 				}

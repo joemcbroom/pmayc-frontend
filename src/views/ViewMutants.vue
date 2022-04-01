@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DefaultButton from '@/components/DefaultButton.vue';
+import { useIsMobile } from '@/utils/useIsMobile';
 import { useCryptoStore } from '@/store/crypto';
 import { useUserStore } from '@/store/user';
 import { Ref, ref } from 'vue';
@@ -17,6 +18,8 @@ const user = useUserStore();
 const { unstakedMutants } = storeToRefs(user);
 
 const nftsOwned = ref([]) as Ref<number[]>;
+
+const isMobile = useIsMobile();
 
 const getNFTsFromContract = async () => {
 	try {
@@ -69,13 +72,13 @@ const enter = (el, done: gsap.Callback) => {
 		:css="false"
 		@before-enter="beforeEnter"
 		@enter="enter"
-		v-if="unstakedMutants.length"
+		v-if="unstakedMutants.length && !isMobile"
 		class="mt-4 flex flex-wrap justify-center gap-6"
 	>
 		<flip-card
 			v-for="(nft, i) in unstakedMutants"
 			:key="nft.token_id"
-			class="aspect-1 w-3/12 xl:w-2/12"
+			class="aspect-1 w-5/12 md:w-3/12 xl:w-2/12"
 			:data-index="i"
 		>
 			<template #front>
@@ -97,5 +100,42 @@ const enter = (el, done: gsap.Callback) => {
 			</template>
 		</flip-card>
 	</transition-group>
+	<div
+		class="mx-auto mt-4 w-9/12 overflow-hidden text-center"
+		v-if="unstakedMutants.length && isMobile"
+	>
+		<div
+			class="touch flex w-full snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth"
+		>
+			<flip-card
+				v-for="(nft, i) in unstakedMutants"
+				:key="nft.token_id"
+				class="aspect-1 w-9/12 shrink-0 snap-x snap-mandatory snap-start"
+				:data-index="i"
+			>
+				<template #front>
+					<img :src="nft.secure_url" />
+				</template>
+				<template #back>
+					<div
+						class="flex h-full flex-col items-start justify-evenly"
+					>
+						<div
+							v-for="{ trait_type, value } in nft.attributes"
+							class="flex flex-wrap items-center"
+							:key="trait_type"
+						>
+							<div class="text-sm font-bold">
+								{{ trait_type }}:
+							</div>
+							<div class="pl-2 text-xs">
+								{{ value }}
+							</div>
+						</div>
+					</div>
+				</template>
+			</flip-card>
+		</div>
+	</div>
 </template>
 <style lang="scss"></style>
