@@ -221,9 +221,19 @@ export const useCryptoStore = defineStore('crypto', {
 			});
 		},
 		async getWallet(
-			provider: ethers.providers.Web3Provider
+			provider?: ethers.providers.Web3Provider
 		): Promise<string | undefined> {
-			const [accounts] = await provider.listAccounts();
+			// @ts-expect-error it's there bro, trust me bro
+			const { ethereum } = window;
+			if (!ethereum) {
+				throw new CryptoError(
+					'No ethereum provider detected',
+					CryptoErrorTypes.NO_PROVIDER
+				);
+			}
+			const thisProvider =
+				provider || new ethers.providers.Web3Provider(ethereum);
+			const [accounts] = await thisProvider.listAccounts();
 			return accounts;
 		},
 	},

@@ -8,20 +8,27 @@ import { storeToRefs } from 'pinia';
 import userLoggedOut from '@/assets/user-outline.png';
 import userLoggedIn from '@/assets/user-fill.png';
 import DarkSelector from './DarkSelector.vue';
-import { watch } from 'vue';
+import { onMounted, watch } from 'vue';
 const crypto = useCryptoStore();
 const user = useUserStore();
 const { account, balance, profileImage } = storeToRefs(user);
 const errorStore = useErrorStore();
 const { isBusy } = storeToRefs(crypto);
 const { highlightProfile } = storeToRefs(errorStore);
-const { connectWallet } = crypto;
+const { connectWallet, getWallet, clearUserInfo } = crypto;
 
 const profileImageUrl = computed(() => {
 	if (profileImage.value) {
 		return profileImage.value;
 	}
 	return account.value ? userLoggedIn : userLoggedOut;
+});
+
+onMounted(async () => {
+	const connectedWallet = await getWallet();
+	if (!connectedWallet) {
+		clearUserInfo();
+	}
 });
 
 let showDropdown = ref(false);
